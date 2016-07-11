@@ -22,17 +22,16 @@ export class _Todo extends Component {
   constructor() {
     super()
     this.state = {
-      todos: [],
       newTodo: ''
     }
   }
 
-  componentWillMount() {
-    console.log('hello')
-    fetch('http://192.168.1.9:3000/todos')
-      .then((data) => data.json())
-      .then((todos) => this.setState({todos}))
-  }
+  // componentWillMount() {
+  //   console.log('hello')
+  //   fetch('http://192.168.1.9:3000/todos')
+  //     .then((data) => data.json())
+  //     .then((todos) => this.setState({todos}))
+  // }
 
   handlePress() {
     // const id = this.createUniqueId()
@@ -41,7 +40,7 @@ export class _Todo extends Component {
       done: false,
       // id: id
     }
-    this.createTodo(todo)
+    this.props.createTodo(todo)
     this.setState({
       newTodo: ''
     })
@@ -131,11 +130,11 @@ export class _Todo extends Component {
         <View style={styles.todosContainer}>
           <View style={styles.undone}>
             <Text style={styles.todoHeader}>Undone</Text>
-            {this.state.todos.filter(todo => todo.done === false).map(this.renderTodo.bind(this))}
+            {this.props.todos.filter(todo => todo.done === false).map(this.renderTodo.bind(this))}
           </View>
           <View style={styles.done}>
             <Text style={styles.todoHeader}>Done</Text>
-            {this.state.todos.filter(todo => todo.done === true).map(this.renderTodo.bind(this))}
+            {this.props.todos.filter(todo => todo.done === true).map(this.renderTodo.bind(this))}
           </View>
         </View>
       </View>
@@ -153,7 +152,7 @@ const mapState = (state) => ({
   todos: state.todos
 })
 
-export const Todo = connect(mapState, mapActionsToProps)(_todo)
+export const Todo = connect(mapState, mapActionsToProps)(_Todo)
 
 
 const styles = StyleSheet.create({
