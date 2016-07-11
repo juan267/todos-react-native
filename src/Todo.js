@@ -7,10 +7,18 @@ import {
   StyleSheet,
   Dimensions
 } from 'react-native'
+import TodoForm from './TodoForm'
+import { connect } from 'react-redux'
+
+// Actions
 
 const {height, width} = Dimensions.get('window');
 
-export class Todo extends Component {
+export class _Todo extends Component {
+  static defaultProps = {
+    todos: []
+  }
+
   constructor() {
     super()
     this.state = {
@@ -33,21 +41,24 @@ export class Todo extends Component {
       done: false,
       // id: id
     }
-
-    fetch('http://192.168.1.9:3000/todos', {
-      method: "POST",
-      body: JSON.stringify(todo),
-      headers: {
-        "Content-Type": "application/json"
-      }
+    this.createTodo(todo)
+    this.setState({
+      newTodo: ''
     })
-      .then((data) => data.json())
-      .then((todo) => {
-        this.setState({
-          todos: [...this.state.todos, todo],
-          newTodo: ''
-        })
-      })
+    // fetch('http://192.168.1.9:3000/todos', {
+    //   method: "POST",
+    //   body: JSON.stringify(todo),
+    //   headers: {
+    //     "Content-Type": "application/json"
+    //   }
+    // })
+    //   .then((data) => data.json())
+    //   .then((todo) => {
+    //     this.setState({
+    //       todos: [...this.state.todos, todo],
+    //       newTodo: ''
+    //     })
+    //   })
     // const todos = [...this.state.todos, todo]
     // this.setState({
     //   todos: todos,
@@ -113,10 +124,10 @@ export class Todo extends Component {
     return (
       <View style={styles.container}>
         <Text style={styles.header}>Awesome Todo App</Text>
-        <TextInput value={this.state.newTodo} onChangeText={this.handleInputChange.bind(this)} style={styles.input}/>
-        <TouchableOpacity onPress={this.handlePress.bind(this)}style={styles.button}>
-          <Text style={styles.text}>Add Todo</Text>
-        </TouchableOpacity>
+        <TodoForm
+          newTodo={this.state.newTodo}
+          handleInputChange={this.handleInputChange.bind(this)}
+          handlePress={this.handlePress.bind(this)}/>
         <View style={styles.todosContainer}>
           <View style={styles.undone}>
             <Text style={styles.todoHeader}>Undone</Text>
@@ -131,6 +142,19 @@ export class Todo extends Component {
     )
   }
 }
+
+const mapActionsToProps = (dispatch) => ({
+  createTodo(todo) {
+    dispatch({type: 'CREATE_TODO', payload: todo})
+  }
+})
+
+const mapState = (state) => ({
+  todos: state.todos
+})
+
+export const Todo = connect(mapState, mapActionsToProps)(_todo)
+
 
 const styles = StyleSheet.create({
   container: {
@@ -148,13 +172,6 @@ const styles = StyleSheet.create({
   input: {
     width: 200,
     height: 50
-  },
-  button: {
-    marginTop: 10,
-    backgroundColor: '#FFE850',
-    width: 150,
-    borderRadius: 20,
-    // alignItems: 'center'
   },
   todosContainer: {
     flex: 1,

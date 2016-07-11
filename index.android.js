@@ -6,8 +6,14 @@
 
 import React, { Component } from 'react';
 import { AppRegistry } from 'react-native';
-import { Todo } from './src/Todo'
+import { Main as Root } from './src/Main'
+import { Provider } from 'react-redux'
+import { store } from './src/store'
 
-const Main = () => <Todo />
+const Main = () => (
+  <Provider store={store}>
+    <Root />
+  </Provider>
+)
 
 AppRegistry.registerComponent('todoApp', () => Main);
